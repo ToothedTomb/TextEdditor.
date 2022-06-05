@@ -212,12 +212,12 @@ class TextEditor:
     except Exception as e:
       root = tk.Toplevel()  
       root.resizable(0,0)
-      root.title("Sorry there was a problem :(")
+      root.title("This document was saved.")
       root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='icon.png'))
 
 
-      labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="Failed to save.")
-      label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="Please try to save this document again.")
+      labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="Saved successfully.")
+      label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This document was saved. :)")
       labelTitle.pack(side="top",fill="x",pady=1)
       label.pack(side="top", fill="x", pady=2)
       B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
@@ -356,3 +356,4 @@ root.protocol("WM_DELETE_WINDOW", on_closing)
 
 
 root.mainloop()
+
