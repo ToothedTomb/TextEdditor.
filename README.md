@@ -1,3 +1,3 @@
-#   Basic Text Edditor For Linux version 3.
+#   Basic Text Edditor For Linux 4.o.
 Simple and lightweight text edditor for Linux.
-![Screenshot from 2022-04-18 14-16-43](https://user-images.githubusercontent.com/52569279/163813721-059837e2-46b1-48a3-84f9-c523ba17c5b6.png)
+![Screenshot from 2022-06-05 18-53-13](https://user-images.githubusercontent.com/52569279/172063734-aafcbedd-1337-4d56-a076-fedb22a9e22b.png)
