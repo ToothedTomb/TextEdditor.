@@ -64,7 +64,7 @@ class TextEditor:
     self.root = root
     self.root.configure(bg='pink')  
     # Title of the window
-    self.root.title("Basic Text Edditor 4.0!")
+    self.root.title("Basic Text Edditor 4.1!")
     # Window Geometry
     # Initializing filename
     self.filename = None
@@ -303,20 +303,8 @@ class TextEditor:
         # Calling Set title
         self.settitle()
         # Updating Status
-        self.status.set("Undone Successfully")
     except Exception as e:
-      root = tk.Toplevel()  
-      root.resizable(0,0)
-      root.title("Sorry there was a problem :(")
-      root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='icon.png'))
-
-
-      labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="Failed to undo.")
-      label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="Please try again.")
-      labelTitle.pack(side="top",fill="x",pady=1)
-      label.pack(side="top", fill="x", pady=2)
-      B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
-      B1.pack()# Creating TK Container
+      return()
 root = tk.Tk()
 # Passing Root to TextEditor Class
 TextEditor(root)
