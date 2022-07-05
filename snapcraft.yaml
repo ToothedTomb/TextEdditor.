@@ -16,3 +16,8 @@ parts:
     source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
     source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
 
+python-packages:
+  - tkinter 
+  
+python-version:
+  python3
