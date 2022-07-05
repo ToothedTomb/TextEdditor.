@@ -14,4 +14,5 @@ parts:
     plugin: nil
     plugin: python
     source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
+    source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
 
