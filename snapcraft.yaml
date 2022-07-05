@@ -12,7 +12,7 @@ architectures:
 
 apps:
   basictextedditor:
-    command: bin/basictextedditor
+    command: basictextedditor
 parts:
   basictextedditor:
     # See 'snapcraft plugins'
