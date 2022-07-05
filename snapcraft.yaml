@@ -1,6 +1,6 @@
 name: basictextedditor # you probably want to 'snapcraft register <name>'
 base: core20 # the base snap is the execution environment for this snap
-version: '1.0' # just for humans, typically '1.2+git' or '1.3.2'
+version: '1.1' # just for humans, typically '1.2+git' or '1.3.2'
 summary: Single-line elevator pitch for your amazing snap # 79 char long summary
 description: |
   Basic Text Edditor For Linux and FreeBSD.
@@ -18,8 +18,9 @@ parts:
     # See 'snapcraft plugins'
     plugin: nil
     plugin: python3
-    source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
-    source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
+    source: https://github.com/ToothedTomb/TextEdditor.
+    #source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
+    #source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
     python-version: python3
     stage-packages: [python3-tk]
   
