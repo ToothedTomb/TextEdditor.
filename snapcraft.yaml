@@ -22,7 +22,6 @@ parts:
     #source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
     #source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
     python-version: python3
-    stage-packages: [python3-tk]
-  
+    python-packages: [python3-tk]  
 python-version:
   python3
