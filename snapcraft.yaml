@@ -8,16 +8,18 @@ description: |
 grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 
+apps:
+  basictextedditor:
+    command: basictextedditor
 parts:
-  my-part:
+  basictextedditor:
     # See 'snapcraft plugins'
     plugin: nil
-    plugin: python
+    plugin: python3
     source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
     source: https://github.com/ToothedTomb/TextEdditor./blob/main/icon.png
-
-python-packages:
-  - tkinter 
+    python-version: python3
+    stage-packages: [python3-tk]
   
 python-version:
   python3
