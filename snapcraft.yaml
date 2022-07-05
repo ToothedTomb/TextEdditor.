@@ -13,4 +13,5 @@ parts:
     # See 'snapcraft plugins'
     plugin: nil
     plugin: python
+    source: https://github.com/ToothedTomb/TextEdditor./blob/main/TextEdditorForLinux.py
 
