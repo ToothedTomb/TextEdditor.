@@ -1,7 +1,7 @@
-#   Basic Text Edditor For Linux 5.0!
+#   Basic Text Edditor For Linux 6.0!
 Simple and lightweight text edditor for Linux and FreeBSD.
 
-![Screenshot from 2024-05-15 18-24-22](https://github.com/ToothedTomb/TextEdditor./assets/52569279/f3d3fa67-39ac-45e9-840b-2facef62b5b9)
+![Screenshot from 2024-05-16 20-31-26](https://github.com/ToothedTomb/TextEdditor./assets/52569279/b491c228-3740-4e89-af4e-fd52bd22cc73)
 
 Download:
 https://jonathan-linux.itch.io/text-edditor
