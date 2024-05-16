@@ -10,6 +10,7 @@ import os
 import sys
 from PIL import Image
 from PIL import ImageTk
+from tkinter import font
 #-------------------------------------
 #Making the popups
 def whoMadeThisSoftware():
@@ -56,6 +57,7 @@ def KeyboardShortcuts():
       B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
       B1.pack()
 
+
 #-------------------------------------
 #Customzing the scrollbar
 # Defining TextEditor Class
@@ -66,7 +68,7 @@ class TextEditor:
     self.root = root
     self.root.configure(bg='pink')  
     # Title of the window
-    self.root.title("Basic Text Editor 5.0!")
+    self.root.title("Basic Text Editor 6.0!")
     # Window Geometry
     # Initializing filename
     self.filename = None
@@ -132,8 +134,23 @@ class TextEditor:
     Undo_Image = Image.open("assets/undo-circular-arrow.png")
     Undo_Image = Undo_Image.resize((36,36))
     Undo_Icon = ImageTk.PhotoImage(Undo_Image)
+    
 
+    Font_Image = Image.open("assets/font.png")
+    Font_Image = Font_Image.resize((36,36))
+    Font_Icon = ImageTk.PhotoImage(Font_Image)
 
+    Bold_Image = Image.open("assets/font-style-bold.png")
+    Bold_Image = Bold_Image.resize((36,36))
+    Bold_Icon = ImageTk.PhotoImage(Bold_Image)
+
+    Italic_Image = Image.open("assets/italic-font.png")
+    Italic_Image = Italic_Image.resize((36,36))
+    Italic_Icon = ImageTk.PhotoImage(Italic_Image)
+
+    Marker_Image = Image.open("assets/marker.png")
+    Marker_Image = Marker_Image.resize((36,36))
+    Marker_Icon = ImageTk.PhotoImage(Marker_Image)
     # Configuring menubar on root window
     self.root.config(menu=self.menubar)
     # Creating File Menu
@@ -177,7 +194,10 @@ class TextEditor:
     self.Edit_icon = Edit_icon
 
     self.about = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
+    self.fontsSetting = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
 
+    self.menubar.add_cascade(image=Font_Icon, compound=tk.LEFT, menu=self.fontsSetting)
+    self.Font_Icon = Font_Icon
 
     self.menubar.add_cascade(image=About_icon,menu=self.about)
     self.About_icon = About_icon
@@ -194,8 +214,15 @@ class TextEditor:
     # Creating Help Menu
     self.helpmenu = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
     # Creating Scrollbar
+
+
+
+
+
     scrol_y = Scrollbar(self.root,orient=VERTICAL,background="#367cca", activebackground="pink",width="20")
     # Creating Text Area
+
+
     self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("ubuntu",20),relief=GROOVE)
     # Packing scrollbar to root window
     scrol_y.pack(side=RIGHT,fill=Y)
@@ -204,6 +231,53 @@ class TextEditor:
     # Packing Text Area to root window
     self.txtarea.pack(fill=BOTH,expand=1)
   # Defining settitle function
+    self.italic_font = font.Font(family="ubuntu",size=20,slant="italic")
+    self.bold_font = font.Font(family="ubuntu", size=20, weight='bold')
+
+    #self.bold_font = font.Font(family="ubuntu", size=20, weight='bold')
+    def bold_text():
+       try:
+        if self.txtarea.tag_ranges(tk.SEL):
+          current_tags = self.txtarea.tag_names("sel.first")
+          if "bold" in current_tags:
+            self.txtarea.tag_remove("bold", "sel.first", "sel.last")
+          else:
+            self.txtarea.tag_add("bold", "sel.first", "sel.last")
+            self.txtarea.tag_configure("bold", font=self.bold_font)
+       except tk.TclError:
+            pass  # No text selected or other error
+    def italic_text():
+       try:
+        if self.txtarea.tag_ranges(tk.SEL):
+          current_tags = self.txtarea.tag_names("sel.first")
+          if "italic" in current_tags:
+            self.txtarea.tag_remove("italic", "sel.first", "sel.last")
+          else:
+            self.txtarea.tag_add("italic", "sel.first", "sel.last")
+            self.txtarea.tag_configure("italic", font=self.italic_font)
+       except tk.TclError:
+            pass  # No text selected or other error
+    # Future update need to do a lot of config with the text area lol. 
+    # self.underline_font= font.Font(family="Ubuntu",size=20, underline=1)
+    def add_highlighter():
+       try:
+        if self.txtarea.tag_ranges(tk.SEL):
+          current_tags = self.txtarea.tag_names("sel.first")
+          if "start" in current_tags:
+            self.txtarea.tag_remove("start", "sel.first", "sel.last")
+          else:
+            self.txtarea.tag_add("start", "sel.first", "sel.last")
+            self.txtarea.tag_config("start", background= "pink")
+       except tk.TclError:
+            pass  # No text selected or other error
+       
+    self.fontsSetting.add_command(label="Bold",image=Bold_Icon,compound=tk.LEFT,command=bold_text)
+    self.Bold_Icon = Bold_Icon
+    self.fontsSetting.add_command(label="Italic",image= Italic_Icon, compound=tk.LEFT,command=italic_text )
+    self.Italic_Icon = Italic_Icon
+    self.fontsSetting.add_command(label="Highlight",image=Marker_Icon,compound=tk.LEFT, command=add_highlighter)
+    self.Marker_Icon = Marker_Icon
+
   def settitle(self):
     # Checking if Filename is not None
     if self.filename:
@@ -342,6 +416,7 @@ class TextEditor:
   def paste(self,*args):
     self.txtarea.event_generate("<<Paste>>")
   # Defining Undo Funtion
+    
   def undo(self,*args):
     # Exception handling
     try:
