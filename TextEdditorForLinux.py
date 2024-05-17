@@ -68,7 +68,7 @@ class TextEditor:
     self.root = root
     self.root.configure(bg='pink')  
     # Title of the window
-    self.root.title("Basic Text Editor 6.0!")
+    self.root.title("Basic Text Editor 7.0!")
     # Window Geometry
     # Initializing filename
     self.filename = None
@@ -151,6 +151,18 @@ class TextEditor:
     Marker_Image = Image.open("assets/marker.png")
     Marker_Image = Marker_Image.resize((36,36))
     Marker_Icon = ImageTk.PhotoImage(Marker_Image)
+
+    Underline_Image = Image.open("assets/underline.png")
+    Underline_Image = Underline_Image.resize((36,36))
+    Underline_Icon = ImageTk.PhotoImage(Underline_Image)
+
+    BiggerFont_Image = Image.open("assets/up-arrow.png")
+    BiggerFont_Image = BiggerFont_Image.resize((36,36))
+    BiggerFont_Icon = ImageTk.PhotoImage(BiggerFont_Image)
+    
+    SmallerFont_Image = Image.open("assets/down-arrow.png")
+    SmallerFont_Image = SmallerFont_Image.resize((36,36))
+    SmallerFont_Icon = ImageTk.PhotoImage(SmallerFont_Image)
     # Configuring menubar on root window
     self.root.config(menu=self.menubar)
     # Creating File Menu
@@ -173,7 +185,7 @@ class TextEditor:
     self.menubar.add_cascade(image=File_icon, compound=tk.LEFT, menu=self.filemenu)
     self.file_icon = File_icon
     # Creating Edit Menu
-    self.editmenu = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
+    self.editmenu = Menu(self.menubar,font=("Ubuntu",23,"bold"),activebackground="pink",tearoff=0)
     # Adding Cut text Command
     self.editmenu.add_command(label="Cut",image=Cut_icon,compound=tk.LEFT,command=self.cut)
     self.Cut_icon = Cut_icon
@@ -193,8 +205,8 @@ class TextEditor:
     self.menubar.add_cascade(image=Edit_icon, compound=tk.LEFT, menu=self.editmenu)
     self.Edit_icon = Edit_icon
 
-    self.about = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
-    self.fontsSetting = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
+    self.about = Menu(self.menubar,font=("Ubuntu",23,"bold"),activebackground="pink",tearoff=0)
+    self.fontsSetting = Menu(self.menubar,font=("Ubuntu",23,"bold"),activebackground="pink",tearoff=0)
 
     self.menubar.add_cascade(image=Font_Icon, compound=tk.LEFT, menu=self.fontsSetting)
     self.Font_Icon = Font_Icon
@@ -212,7 +224,7 @@ class TextEditor:
 
 
     # Creating Help Menu
-    self.helpmenu = Menu(self.menubar,font=("Ubuntu",23),activebackground="pink",tearoff=0)
+    self.helpmenu = Menu(self.menubar,font=("Ubuntu",23,"bold"),activebackground="pink",tearoff=0)
     # Creating Scrollbar
 
 
@@ -221,9 +233,9 @@ class TextEditor:
 
     scrol_y = Scrollbar(self.root,orient=VERTICAL,background="#367cca", activebackground="pink",width="20")
     # Creating Text Area
+    self.FontSize = 20
 
-
-    self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("ubuntu",20),relief=GROOVE)
+    self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("ubuntu",size:=self.FontSize),relief=GROOVE)
     # Packing scrollbar to root window
     scrol_y.pack(side=RIGHT,fill=Y)
     # Adding Scrollbar to text area
@@ -231,9 +243,33 @@ class TextEditor:
     # Packing Text Area to root window
     self.txtarea.pack(fill=BOTH,expand=1)
   # Defining settitle function
-    self.italic_font = font.Font(family="ubuntu",size=20,slant="italic")
-    self.bold_font = font.Font(family="ubuntu", size=20, weight='bold')
+    self.underline = font.Font(family="ubuntu",size=self.FontSize,underline=89)
+    self.italic_font = font.Font(family="ubuntu",size=self.FontSize,slant="italic")
+    self.bold_font = font.Font(family="ubuntu", size=self.FontSize, weight='bold')
+    def update_fonts():
+      self.txtarea.configure(font=font.Font(family="Ubuntu",size=self.FontSize))
+      self.italic_font = font.Font(family="ubuntu",size=self.FontSize,slant="italic")
+      self.bold_font = font.Font(family="ubuntu", size=self.FontSize, weight='bold')
+      self.underline = font.Font(family="ubuntu",size=self.FontSize,underline=89)
 
+    def increaseFont():
+        self.FontSize += 10
+        update_fonts()
+      #self.txtarea.tag_config(size=self.FontSize)
+    def decreaseFont():
+       self.FontSize -= 10
+       update_fonts()
+    def underline_text():
+      try:
+        if self.txtarea.tag_ranges(tk.SEL):
+          current_tags = self.txtarea.tag_names("sel.first")
+          if "underline" in current_tags:
+            self.txtarea.tag_remove("underline", "sel.first", "sel.last")
+          else:
+            self.txtarea.tag_add("underline", "sel.first", "sel.last")
+            self.txtarea.tag_configure("underline", font=self.underline)
+      except tk.TclError:
+            pass  # No text selected or other error
     #self.bold_font = font.Font(family="ubuntu", size=20, weight='bold')
     def bold_text():
        try:
@@ -277,7 +313,12 @@ class TextEditor:
     self.Italic_Icon = Italic_Icon
     self.fontsSetting.add_command(label="Highlight",image=Marker_Icon,compound=tk.LEFT, command=add_highlighter)
     self.Marker_Icon = Marker_Icon
-
+    self.fontsSetting.add_command(label="Underline",image=Underline_Icon, compound=tk.LEFT,command=underline_text)
+    self.Underline_Icon = Underline_Icon
+    self.fontsSetting.add_command(label="Bigger Text",image=BiggerFont_Icon, compound=tk.LEFT, command=increaseFont)
+    self.BiggerFont_Icon = BiggerFont_Icon
+    self.fontsSetting.add_command(label="Smaller Text",image=SmallerFont_Icon,compound=tk.LEFT,command=decreaseFont)
+    self.SmallerFont_Icon = SmallerFont_Icon
   def settitle(self):
     # Checking if Filename is not None
     if self.filename:
@@ -318,7 +359,7 @@ class TextEditor:
     except Exception as e:
       root = tk.Toplevel()  
       root.resizable(0,0)
-      root.title("Opened sucessfully.")
+      root.title("Opened successfully.")
       root.tk.call('wm', 'iconphoto', root._w, tkinter.PhotoImage(file='assets/iconForApp.png'))
 
 
