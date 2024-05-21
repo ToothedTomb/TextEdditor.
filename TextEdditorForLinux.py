@@ -24,8 +24,6 @@ def whoMadeThisSoftware():
     label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="Jonathan Steadman has made this software.")
     labelTitle.pack(side="top",fill="x",pady=1)
     label.pack(side="top", fill="x", pady=2)
-    B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
-    B1.pack()
 
 def WhatIsThisSoftware():
     root = tk.Toplevel()  
@@ -35,11 +33,9 @@ def WhatIsThisSoftware():
 
 
     labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="What is this software?")
-    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic text edditor for Linux and FreeBSD.")
+    label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="This software is a free and open source basic text editor for Linux.")
     labelTitle.pack(side="top",fill="x",pady=1)
     label.pack(side="top", fill="x", pady=2)
-    B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
-    B1.pack()
 
 def KeyboardShortcuts():
       root = tk.Toplevel()  
@@ -51,11 +47,15 @@ def KeyboardShortcuts():
       labelTitle = ttk.Label(root,font=("Ubuntu", 26,"bold","underline"),anchor='center', text="Keyboard shortcuts.")
       label = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="'Control + C' will copy the text.")
       label2 = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="'Control + V' will paste the text.")      
+      label3 = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="'Control + O' will allow you to open a document.")
+      label4 = ttk.Label(root,font=("Ubuntu", 16,"bold",),anchor='center', text="'Control + S' will save your document.")
+
       labelTitle.pack(side="top",fill="x",pady=1)
       label.pack(side="top", fill="x", pady=2)
       label2.pack(side="top", fill="x", pady=3)
-      B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
-      B1.pack()
+      label3.pack(side="top", fill="x", pady=4)
+      label4.pack(side="top",fill="x",pady=5)
+
 
 
 #-------------------------------------
@@ -68,7 +68,7 @@ class TextEditor:
     self.root = root
     self.root.configure(bg='pink')  
     # Title of the window
-    self.root.title("Basic Text Editor 7.0!")
+    self.root.title("Basic Text Editor 8.0!")
     # Window Geometry
     # Initializing filename
     self.filename = None
@@ -163,6 +163,10 @@ class TextEditor:
     SmallerFont_Image = Image.open("assets/down-arrow.png")
     SmallerFont_Image = SmallerFont_Image.resize((36,36))
     SmallerFont_Icon = ImageTk.PhotoImage(SmallerFont_Image)
+    
+    Strickthrough_Image = Image.open("assets/strikethrough.png")
+    Strickthrough_Image = Strickthrough_Image.resize((36,36))
+    Strickthrough_Icon = ImageTk.PhotoImage(Strickthrough_Image)
     # Configuring menubar on root window
     self.root.config(menu=self.menubar)
     # Creating File Menu
@@ -246,11 +250,14 @@ class TextEditor:
     self.underline = font.Font(family="ubuntu",size=self.FontSize,underline=89)
     self.italic_font = font.Font(family="ubuntu",size=self.FontSize,slant="italic")
     self.bold_font = font.Font(family="ubuntu", size=self.FontSize, weight='bold')
+    self.Strikethrough = font.Font(family="ubuntu",size=self.FontSize,overstrike=89)
+
     def update_fonts():
       self.txtarea.configure(font=font.Font(family="Ubuntu",size=self.FontSize))
       self.italic_font = font.Font(family="ubuntu",size=self.FontSize,slant="italic")
       self.bold_font = font.Font(family="ubuntu", size=self.FontSize, weight='bold')
       self.underline = font.Font(family="ubuntu",size=self.FontSize,underline=89)
+      self.Strikethrough = font.Font(family="ubuntu",size=self.FontSize,overstrike=89)
 
     def increaseFont():
         self.FontSize += 10
@@ -306,7 +313,38 @@ class TextEditor:
             self.txtarea.tag_config("start", background= "pink")
        except tk.TclError:
             pass  # No text selected or other error
-       
+    def Strikethrough():
+       try:
+        if self.txtarea.tag_ranges(tk.SEL):
+          current_tags = self.txtarea.tag_names("sel.first")
+          if "strikethrough" in current_tags:
+            self.txtarea.tag_remove("strikethrough", "sel.first", "sel.last")
+          else:
+            self.txtarea.tag_add("strikethrough", "sel.first", "sel.last")
+            self.txtarea.tag_config("strikethrough", font=self.Strikethrough)
+       except tk.TclError:
+            pass  # No text selected or other error
+    def RightClickMenu(e):
+       my_menu.tk_popup(e.x_root, e.y_root)
+    
+    my_menu = Menu(self.menubar,font=("Ubuntu",23,"bold"),activebackground="pink",tearoff=0)
+
+    # Adding Copy text Command
+    my_menu.add_command(label="Copy",image=Copy_Icon,compound=tk.LEFT,command=self.copy)
+    self.Copy_Icon = Copy_Icon
+    # Adding Paste text command
+    my_menu.add_command(label="Paste",image=Copy_Icon,compound=tk.LEFT,command=self.paste)
+    self.Copy_Icon = Copy_Icon
+
+    my_menu.add_command(label="Cut",image=Cut_icon,compound=tk.LEFT,command=self.cut)
+    self.Cut_icon = Cut_icon
+
+
+
+    # Adding Seprator
+    # Adding Undo text Command
+  
+    # Cascading editmenu to menubar
     self.fontsSetting.add_command(label="Bold",image=Bold_Icon,compound=tk.LEFT,command=bold_text)
     self.Bold_Icon = Bold_Icon
     self.fontsSetting.add_command(label="Italic",image= Italic_Icon, compound=tk.LEFT,command=italic_text )
@@ -315,10 +353,18 @@ class TextEditor:
     self.Marker_Icon = Marker_Icon
     self.fontsSetting.add_command(label="Underline",image=Underline_Icon, compound=tk.LEFT,command=underline_text)
     self.Underline_Icon = Underline_Icon
+    self.fontsSetting.add_command(label="Strikethrough",image=Strickthrough_Icon, compound=tk.LEFT,command=Strikethrough)
+    self.Strickthrough_Icon = Strickthrough_Icon
     self.fontsSetting.add_command(label="Bigger Text",image=BiggerFont_Icon, compound=tk.LEFT, command=increaseFont)
     self.BiggerFont_Icon = BiggerFont_Icon
     self.fontsSetting.add_command(label="Smaller Text",image=SmallerFont_Icon,compound=tk.LEFT,command=decreaseFont)
     self.SmallerFont_Icon = SmallerFont_Icon
+    self.root.bind('<Control-s>', self.savefile)
+    self.root.bind('<Control-o>',self.openfile)
+    self.root.bind('<Button-3>',RightClickMenu)
+
+
+  
   def settitle(self):
     # Checking if Filename is not None
     if self.filename:
@@ -457,7 +503,7 @@ class TextEditor:
   def paste(self,*args):
     self.txtarea.event_generate("<<Paste>>")
   # Defining Undo Funtion
-    
+  
   def undo(self,*args):
     # Exception handling
     try:
