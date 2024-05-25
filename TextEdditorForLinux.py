@@ -11,8 +11,39 @@ import sys
 from PIL import Image
 from PIL import ImageTk
 from tkinter import font
+from nltk.corpus import words
+import re
+from tkcolorpicker import askcolor
+import nltk
+nltk.download('words')
+from nltk.corpus import words
 #-------------------------------------
+word_list = words.words()
+print(word_list[:10])
 #Making the popups
+def check_Spelling(text_widget):
+    text = text_widget.get("1.0", "end-1c")
+    words_in_text = text.split()
+    misspelled = [word for word in words_in_text if word.lower() not in word_list]
+
+    # Clear existing misspelled tags
+    for tag in text_widget.tag_names():
+        if tag.startswith("misspelled"):
+            text_widget.tag_remove(tag, "1.0", "end")
+
+    # Apply misspelled tags
+    for word in misspelled:
+        start_index = "1.0"
+        while True:
+            start_index = text_widget.search(word, start_index, nocase=1, stopindex="end")
+            if not start_index:
+                break
+            end_index = f"{start_index}+{len(word)}c"
+            text_widget.tag_add("misspelled", start_index, end_index)
+            start_index = end_index
+
+    text_widget.tag_config("misspelled", foreground="red")
+
 def whoMadeThisSoftware():
     root = tk.Toplevel()  
     root.resizable(0,0)
@@ -68,7 +99,7 @@ class TextEditor:
     self.root = root
     self.root.configure(bg='pink')  
     # Title of the window
-    self.root.title("Basic Text Editor 8.0!")
+    self.root.title("Basic Text Editor 9.0!")
     # Window Geometry
     # Initializing filename
     self.filename = None
@@ -167,6 +198,10 @@ class TextEditor:
     Strickthrough_Image = Image.open("assets/strikethrough.png")
     Strickthrough_Image = Strickthrough_Image.resize((36,36))
     Strickthrough_Icon = ImageTk.PhotoImage(Strickthrough_Image)
+
+    Spell_Image = Image.open("assets/spell.png")
+    Spell_Image = Spell_Image.resize((36,36))
+    Spell_Icon = ImageTk.PhotoImage(Spell_Image)
     # Configuring menubar on root window
     self.root.config(menu=self.menubar)
     # Creating File Menu
@@ -199,12 +234,17 @@ class TextEditor:
     # Adding Paste text command
     self.editmenu.add_command(label="Paste",image=Copy_Icon,compound=tk.LEFT,command=self.paste)
     self.Copy_Icon = Copy_Icon
-
     # Adding Seprator
     self.editmenu.add_separator()
     # Adding Undo text Command
     self.editmenu.add_command(label="Undo",image =Undo_Icon, compound=tk.LEFT,command=self.undo)
     self.Undo_Icon = Undo_Icon
+    self.editmenu.add_separator()
+    self.editmenu.add_command(label="Spelling errors",image=Spell_Icon, compound=tk.LEFT,command=self.check_spelling)
+    self.Spell_Icon = Spell_Icon
+
+
+
     # Cascading editmenu to menubar
     self.menubar.add_cascade(image=Edit_icon, compound=tk.LEFT, menu=self.editmenu)
     self.Edit_icon = Edit_icon
@@ -238,7 +278,7 @@ class TextEditor:
     scrol_y = Scrollbar(self.root,orient=VERTICAL,background="#367cca", activebackground="pink",width="20")
     # Creating Text Area
     self.FontSize = 20
-
+    
     self.txtarea = Text(self.root,yscrollcommand=scrol_y.set,font=("ubuntu",size:=self.FontSize),relief=GROOVE)
     # Packing scrollbar to root window
     scrol_y.pack(side=RIGHT,fill=Y)
@@ -301,16 +341,16 @@ class TextEditor:
        except tk.TclError:
             pass  # No text selected or other error
     # Future update need to do a lot of config with the text area lol. 
-    # self.underline_font= font.Font(family="Ubuntu",size=20, underline=1)
+    # self.underline_font= font.Font(family="Ubuntu",size=20, underline=1
     def add_highlighter():
        try:
         if self.txtarea.tag_ranges(tk.SEL):
-          current_tags = self.txtarea.tag_names("sel.first")
-          if "start" in current_tags:
-            self.txtarea.tag_remove("start", "sel.first", "sel.last")
-          else:
-            self.txtarea.tag_add("start", "sel.first", "sel.last")
-            self.txtarea.tag_config("start", background= "pink")
+          color = askcolor()[1]
+          if color:
+             tag_name = f"highlight_{color}"
+             self.txtarea.tag_add(tag_name, "sel.first", "sel.last")
+             self.txtarea.tag_config(tag_name, background=color)
+            #self.txtarea.tag_config("start", background= "pink")
        except tk.TclError:
             pass  # No text selected or other error
     def Strikethrough():
@@ -338,6 +378,9 @@ class TextEditor:
 
     my_menu.add_command(label="Cut",image=Cut_icon,compound=tk.LEFT,command=self.cut)
     self.Cut_icon = Cut_icon
+    my_menu.add_separator()
+    my_menu.add_command(label="Spelling errors",image=Spell_Icon, compound=tk.LEFT,command=self.check_spelling)
+    self.Spell_Icon = Spell_Icon
 
 
 
@@ -449,6 +492,7 @@ class TextEditor:
       B1 = tk.Button(root, text="Exit",font=("ubuntu",28),bg="#367cca",activebackground='pink', command = root.destroy)
       B1.pack()
   # Defining Save As File Funtion
+  
   def saveasfile(self,*args):
     # Exception handling
 
@@ -502,8 +546,11 @@ class TextEditor:
   # Defining Paste Funtion
   def paste(self,*args):
     self.txtarea.event_generate("<<Paste>>")
+
+
   # Defining Undo Funtion
-  
+  def check_spelling(self,*args):
+    check_Spelling(self.txtarea)
   def undo(self,*args):
     # Exception handling
     try:
